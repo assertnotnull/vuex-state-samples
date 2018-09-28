@@ -1,4 +1,5 @@
 # vuestate
+based on https://coursetro.com/posts/code/144/A-Vuex-Tutorial-by-Example---Learn-Vue-State-Management
 
 ## Project setup
 ```
