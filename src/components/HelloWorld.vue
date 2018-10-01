@@ -3,12 +3,18 @@
     <div class="left">
       <h1>{{ renamedTitleProperty }}</h1>
       <form @submit.prevent="addLink">
-        <input class="link-input" type="text" placeholder="Add a Link" v-model="newLink" />
+        <input class="link-input" type="text" placeholder="Add a Link" v-model="newLink.url" />
+        <input class="link-input" type="text" placeholder="Name" v-model="newLink.name" />
+        <button v-on:click="addLink">Add</button>
       </form>
       <ul>
-        <li v-for="(link, index) in links" v-bind:key="index">
-          {{link}}
-          <button v-on:click="removeLink(index)" class="rm">Remove</button>
+        <li v-for="(link, index) in links" v-on:dblclick="edit(index)" v-bind:key="index">
+          <input class="edit" v-if="editIndex == index" type="text" v-model="editedLink.name">
+          <input class="edit" v-if="editIndex == index" type="text" v-model="editedLink.url">
+          <span v-if="editIndex != index">name: {{link.name}} url: {{link.url}}</span>
+          <button class="rm" v-if="editIndex == index" v-on:click="save">Save</button>
+          <button class="rm" v-if="editIndex == index" v-on:click="cancel">Cancel</button>
+          <button v-on:click="removeLink(index)" v-if="editIndex != index" class="rm">Remove</button>
         </li>
       </ul>
     </div>
@@ -25,8 +31,14 @@ import { mapState, mapMutations, mapActions } from 'vuex'
 export default {
   name: 'HelloWorld',
   data() {
+    console.log('data called')
     return {
-      newLink: ''
+      newLink: {
+        url: '',
+        name: ''
+      },
+      editIndex: -1,
+      editedLink: null
     }
   },
   components: {
@@ -39,8 +51,23 @@ export default {
     })
   },
   methods: {
-    ...mapMutations(['doAddLink']),
-    ...mapActions(['asyncDoRemoveLink']),
+    ...mapMutations(['doAddLink', 'doUpdateLink']),
+    ...mapActions(['asyncDoRemoveLink', 'asyncDoUpdateLink']),
+    edit: function(index) {
+      this.editIndex = index
+      this.editedLink = Object.assign({},this.links[index]) //need to copy object else all vue components will update
+      console.log(this.editedLink)
+    },
+    save: function() {
+      // this.links[this.editIndex] = this.editedLink
+      this.doUpdateLink({link: this.editedLink, index: this.editIndex})
+      this.editIndex = -1
+      this.editedLink = null
+    },
+    cancel: function(e) {
+      this.editIndex = -1
+      this.editedLink = null
+    },
     addLink: function() {
       this.doAddLink(this.newLink)
       this.newLink = ''
@@ -98,6 +125,11 @@ export default {
     box-shadow: 0 5px 5px lightgrey;
     margin-bottom: 50px;
     outline: none;
+  }
+
+  input.edit {
+    width: 60%;
+    margin: 0 10px 0 0;
   }
 
   .rm {
