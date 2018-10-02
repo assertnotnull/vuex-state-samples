@@ -26,9 +26,8 @@ export default new Vuex.Store({
       state.links.push(link)
     },
     doUpdateLink: (state, {link, index}) => {
-      console.log('update', state)
-      state.links[index] = link
-      Vue.set(state, 'links', state.links) //modifying an object in an array is not detected by vue -> refresh manually
+      // https://vuejs.org/v2/guide/list.html#Caveats
+      state.links.splice(index, 1, link)
     },
     doRemoveLink: (state, link) => {
       state.links.splice(link, 1)

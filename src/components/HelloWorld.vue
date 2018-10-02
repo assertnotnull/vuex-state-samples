@@ -2,7 +2,7 @@
   <div class="hello">
     <div class="left">
       <h1>{{ renamedTitleProperty }}</h1>
-      <form @submit.prevent="addLink">
+      <form>
         <input class="link-input" type="text" placeholder="Add a Link" v-model="newLink.url" />
         <input class="link-input" type="text" placeholder="Name" v-model="newLink.name" />
         <button v-on:click="addLink">Add</button>
@@ -28,15 +28,19 @@
 import Stats from '@/components/Stats.vue';
 import { mapState, mapMutations, mapActions } from 'vuex'
 
+function getNewLink() {
+  return {
+    url: '',
+    name: ''
+  }
+}
+
 export default {
   name: 'HelloWorld',
   data() {
     console.log('data called')
     return {
-      newLink: {
-        url: '',
-        name: ''
-      },
+      newLink: getNewLink(),
       editIndex: -1,
       editedLink: null
     }
@@ -70,7 +74,7 @@ export default {
     },
     addLink: function() {
       this.doAddLink(this.newLink)
-      this.newLink = ''
+      this.newLink = getNewLink()
     },
     removeLink: function (link) {
       this.asyncDoRemoveLink(link)
