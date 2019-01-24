@@ -2,7 +2,7 @@
   <div class="hello">
     <div class="left">
       <h1>{{ renamedTitleProperty }}</h1>
-      <form>
+      <form v-on:submit.prevent="onSubmit">
         <input class="link-input" type="text" placeholder="Add a Link" v-model="newLink.url" />
         <input class="link-input" type="text" placeholder="Name" v-model="newLink.name" />
         <button v-on:click="addLink">Add</button>
